@@ -1,5 +1,10 @@
-void cdown(int times);
-int i,t;
+#define data_num 500
+
+void cdown(unsigned int times);
+void send_data(boolean, int);
+unsigned int i,t;
+boolean digital_data[data_num] = {0};
+int analog_data[data_num] = {0};
 
 void setup() {
   // put your setup code here, to run once:
@@ -20,18 +25,22 @@ void loop() {
     cdown(3);
     t = millis();
     digitalWrite(13,HIGH);
+    i=0;
     while(millis() < t + 1000){
-      Serial.print(digitalRead(4));
-      Serial.print(",");
-      Serial.println(analogRead(0));
+      digital_data[i] = digitalRead(2);  //PIND & _BV(PD2);
+      analog_data[i] = analogRead(0);
+      i++;
     }
-  Serial.flush();
-  digitalWrite(13,LOW);
-  pinMode(12,OUTPUT);
+    digitalWrite(13,LOW);
+    for(i = 0; i < data_num; i++){
+      send_data(digital_data[i], analog_data[i]);
+    }
+    Serial.flush();
+    pinMode(12,OUTPUT);
   }
 }
 
-void cdown(int times){
+void cdown(unsigned int times){
   for(i = 0;i < times;i++){
     t = millis();
     digitalWrite(13,HIGH);
@@ -41,4 +50,13 @@ void cdown(int times){
     //Serial.println("LOW");
     while(millis() < t+500){}
   }
+}
+
+void send_data(boolean d_data, int a_data){
+  Serial.print(d_data);
+  delay(10);
+  Serial.print(",");
+  delay(10);
+  Serial.println(a_data);
+  delay(10);
 }
