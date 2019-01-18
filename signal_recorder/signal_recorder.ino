@@ -9,6 +9,7 @@ void setup() {
   pinMode(2,INPUT);
   pinMode(4,INPUT);
   pinMode(13,OUTPUT);
+  Serial.println("standingby...");
   while(millis() < t+1000){}
   digitalWrite(13,LOW);
 }
@@ -20,7 +21,7 @@ void loop() {
     t = millis();
     digitalWrite(13,HIGH);
     while(millis() < t + 1000){
-      Serial.print(PIND & _BV(4));
+      Serial.print(digitalRead(4));
       Serial.print(",");
       Serial.println(analogRead(0));
     }
@@ -34,7 +35,7 @@ void cdown(int times){
   for(i = 0;i < times;i++){
     t = millis();
     digitalWrite(13,HIGH);
-    //Serial.println("HIGH");
+    Serial.println(3-i);
     while(millis() < t+100){}
     digitalWrite(13,LOW);
     //Serial.println("LOW");
