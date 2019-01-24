@@ -12,7 +12,7 @@ void setup() {
   pinMode(2,INPUT);
   pinMode(4,INPUT);
   pinMode(13,OUTPUT);
-  Serial.println("standingby...");
+//  Serial.println("standingby...");
   while(millis() < t+1000){}
   digitalWrite(13,LOW);
 }
@@ -32,6 +32,7 @@ void loop() {
     for(i = 0; i < data_num; i++){
       send_data(digital_data[i]);
     }
+    Serial.flush();
     pinMode(12,OUTPUT);
   }
 }
@@ -39,16 +40,16 @@ void loop() {
 void cdown(unsigned int times){
   for(i = 0;i < times;i++){
     t = millis();
-    Serial.println(3-i);
     digitalWrite(13,HIGH);
+//    Serial.println(3-i);
     while(millis() < t+100){}
     digitalWrite(13,LOW);
+//		Serial.println("LOW");
     while(millis() < t+500){}
   }
 }
 
 void send_data(boolean d_data){
   Serial.println(d_data);
-  Serial.flush();
   delay(10);
 }
