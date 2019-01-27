@@ -1,6 +1,6 @@
 # リモコンの信号解析してみる
 <div style="text-align: right;">
-<img src="レポート図/自画像.jpg" width =10% align="right"><br>
+<img src="images/自画像.jpg" width =10% align="right"><br>
 書き手 : @haruyuki_16278
 </div>
 
@@ -25,7 +25,7 @@
 フォトトランジスタは自分の周りの光の強さに合わせて出力される電圧の大きさが変化する素子です．この電圧の変化をArduinoで読み取ってシリアル通信を使ってパソコンに送りましょう．その後はExcel+VBAマクロを使って送られたデータをシートに入力，グラフにして観察することにします．<br>
 これが大まかな流れです．整理して図にまとめてみましょう．<br>
 
-<img src="レポート図/大まかな流れ.png"><br>
+<img src="images/大まかな流れ.png"><br>
 大きくハードウェアとソフトウェアに分類してみました．  
 それでは，ハードウェアから始めていきましょう！
 
@@ -34,24 +34,24 @@
 さて，それでは最初にリモコン信号を受け取って電圧として信号を出力してくれるデバイスを作りましょう．<br>
 そのために，NJL7112Bというフォトトランジスタを使います．<br>
 
-<img src="レポート図/7112B(picture).jpg" width=20% align="left">このフォトトランジスタは赤外光によく反応する性質を持つので，今回の用途には最適です．この素子を使って，周りの明るさに合わせて光の強さが変わるLEDを作ってみましょう．<br clear="all">
+<img src="images/7112B(picture).jpg" width=20% align="left">このフォトトランジスタは赤外光によく反応する性質を持つので，今回の用途には最適です．この素子を使って，周りの明るさに合わせて光の強さが変わるLEDを作ってみましょう．<br clear="all">
 
-<img src="レポート図/LED回路図.png" width=25%>
-<img src="レポート図/LEDブレッドボード.png" width=30% align="left"><br clear="all">
+<img src="images/LED回路図.png" width=25%>
+<img src="images/LEDブレッドボード.png" width=30% align="left"><br clear="all">
 左にブレッドボード上での回路，右にフォトトランジスタを使ってLEDの明るさを制御する回路を示します．<br>
 ブレッドボード上の回路の方では，フォトトランジスタを直接表現できないため，同じく光を感じる素子であるCdSセルで代用しています．
 周りの光が強くなればLEDの光も強くなり，周りの光が弱くなればLEDの光も弱くなる回路になっています．<br>
 下の二枚の写真を見てください．<br>
 左側の写真では画像中央部のフォトトランジスタが見えていて，LEDが赤く光っています．右側の写真のようにフォトとランジスを指でつまでみると，周りが暗くなって光らなくなっていますね．<br clear="all">
-<img src="レポート図/LED強.jpg" width=50%><img src="レポート図/LED弱.jpg" width=50%><br><br>
-<img src="レポート図/リモコンLED.jpg" width=40% align="right">
+<img src="images/LED強.jpg" width=50%><img src="images/LED弱.jpg" width=50%><br><br>
+<img src="images/リモコンLED.jpg" width=40% align="right">
 この回路のフォトトランジスタにリモコンを向けて，ボタンを押してみるとどうでしょうか？<br>
 「ピカピカッ」とすばやく光ったと思います．これがリモコンから送られている信号です．<br>
 この信号をArduinoを使って読み取ることにしましょう．<br clear="all">
 
 ### 信号の記憶・送信
 これまでにも何度か文中に出てきているArduinoですが，「何じゃそれ」という方のために簡単に説明しましょう！<br>
-<img src="レポート図/Arduino.jpg" width=40% align="left">
+<img src="images/Arduino.jpg" width=40% align="left">
 左の写真に写っている青緑色が特徴のボードがArduinoです．
 >**Arduino（アルデュイーノ もしくは アルドゥイーノ）とは、AVRマイコン、入出力ポートを備えた基板、C言語風のArduino言語とそれの統合開発環境から構成されるシステム。** <br>
 >**スタンドアローン型のインタラクティブデバイス開発だけでなく、ホストコンピュータ上のソフトウェア（例えば、Adobe Flash、Processing、Max/MSP、Pure Data、SuperCollider）で制御することもできるワンボードマイコンの一種。**
@@ -59,12 +59,12 @@ wikipedia(https://ja.wikipedia.org/wiki/Arduino)より引用<br clear="all">
 
 つまるところ，Arduinoを使うと，プログラミングを使って回路を動かすことができるんです！<br>
 では， Arduinoを活用してフォトトランジスタで受け取ったリモコンの信号を読みとってみましょう．<br>
-<img src="レポート図/信号取得用ブレッドボード.png" width=40% align="left"><br>
+<img src="images/信号取得用ブレッドボード.png" width=40% align="left"><br>
 ここでもフォトトランジスタはCdSセルで代用しています．以下もブレッドボードの実配線図では代用しますのでご了承ください．<br>
 さて，図ではArduinoのA0ポートに先程LEDをつなげていた部分から配線されていますね．
 これで，LEDに送られていた信号がArduinoに送られるわけです．<br>
 では，Arduino側で，A0ポートの値を読み出すプログラムを作りましょう．<br clear="all">
-<img src="レポート図/Arduino-IDE.png" width=50% align="right"><br>
+<img src="images/Arduino-IDE.png" width=50% align="right"><br>
 そのために，右図の「Arduino IDE」というソフトを使います．<br>
 >Download the Arduino IDE https://www.arduino.cc/en/main/software より<br>
 
@@ -83,9 +83,9 @@ Loop(){
 
 <br clear="all">
 シリアルモニタを起動して見ると下の画像のようにArduinoから送信されてきたA0ポートの電圧値が表示されています．
-<img src="レポート図/List1-シリアルモニタ.png"><br>
+<img src="images/List1-シリアルモニタ.png"><br>
 では再びフォトトランジスタにリモコンを向けてボタンを押してみるとどうでしょうか？<br>
-<img src="レポート図/List1-シリアルモニタ-検知.png" width=60% align="right"><br>
+<img src="images/List1-シリアルモニタ-検知.png" width=60% align="right"><br>
 おおおおおお！！！<br>
 しっかり反応していますね．<br>
 この画像の中では800~1000台の値が出ているときがLEDとつないでいたときLEDが光ったときの値になります．<br>
@@ -93,16 +93,16 @@ Loop(){
 
 ### デバイス化
 そこで，ここまでの2つの小節でやったことを合わせて，こんなものを作ってみました！
-<img src="レポート図/デバイス.jpg" width=50%><img src="レポート図/デバイス内部.jpg" width=50%><br>
+<img src="images/デバイス.jpg" width=50%><img src="images/デバイス内部.jpg" width=50%><br>
 スチレンボードとユニバーサル基板を使ってリモコンの信号を簡単に取れるように箱型のデバイスにしました．<br>
 残念ながら配線を間違えて常に1000近くの値が出力され，信号を拾ったときに値が20~100くらいに下がるようになってしまいましたが，信号は拾えているので良しとしましょう．<br>
-<img src="レポート図/デバイス内部回路.png" width=40% align="right"><br>
+<img src="images/デバイス内部回路.png" width=40% align="right"><br>
 デバイス内部の回路は右図のように配線されています．<br>
 デジタル入力とアナログ入力の両方を使うことができ，また，最初に作ったフォトトランジスタの値で光の大きさが変わるLEDを装備しています．<br>
 また，もう一つのLEDはデジタルの13ポートに繋がっており，これはプログラムを実行したときのパイロットランプとして使うために新たに取り付けました．タクトスイッチも同様に，プログラムで追加した機能を使うために取り付けたものです．<br>
 それでは，ソースコードを見てみましょう．<br clear="all">
 
-<img src="レポート図/プログラムフローチャート.png" width=40% align="right">
+<img src="images/プログラムフローチャート.png" width=40% align="right">
 
 ```Arduino:Signal_Recorder.ino
 // リモコン信号受信用デバイス
@@ -168,7 +168,7 @@ void send_data(boolean d_data){
 
 と，このようなコードになっています．右側にこのプログラムをまとめたフローチャートを示します．これでさっきのLEDとタクトスイッチの役割がわかりましたね．<br>
 ではこのプログラムの実行結果をシリアルモニタで確認してみましょう．<br>
-<img src="レポート図/signal_recorder_シリアルモニタ.png" width=50%><img src="レポート図/signal_recorder_シリアルモニタ_検知.png" width=50%><br>
+<img src="images/signal_recorder_シリアルモニタ.png" width=50%><img src="images/signal_recorder_シリアルモニタ_検知.png" width=50%><br>
 このように，シリアルモニタに「standingby...,3,2,1,…」と表示されています．その後送信されてくるデータがフォトトランジスタで取得した赤外線のデータです．(デジタルポートのデータを読み出しているので，赤外線を検知すれば0,していないときは1が出力されます．)<br>
 右側の画像が実際に赤外線を検知している画面です．<br><br>
 これでハードウェアは完成です！<br>
@@ -190,14 +190,14 @@ VBAとは，Visual Basic for Applicationsの略で，Visual Basicをソフトウ
 5. 開発の左のチェックボックスにチェックを入れる．
 6. 空白のブック画面に「開発」タブが表示される．
 
-<img src="レポート図/Excel開発タブの出し方.png" width=100%><br>
+<img src="images/Excel開発タブの出し方.png" width=100%><br>
 これで，「開発」タブを表示することができたでしょう．では，Visual Basicと書いてある左上のボタンをクリックして，エディタを起動しましょう．<br>
-<img src="レポート図/VBE起動画面.png" width=50% align="right"><br>
+<img src="images/VBE起動画面.png" width=50% align="right"><br>
 このようなエディタが立ち上がったでしょうか？<br>
 ではさっそく，プログラムを書いていきましょう！<br>
 プログラムを記述するために，右側に表示されているプロジェクトウィンドウを右クリックして挿入→標準モジュールを選択して，モジュールを挿入します．<br claer="all"><br>
 
-<img src="レポート図/VBE_helloworld.png" width=50% align="left"><br>
+<img src="images/VBE_helloworld.png" width=50% align="left"><br>
 画面の背景が白くなったらプログラムを入力できます．次のコードを入力してみましょう．<br>
 
 ```VB:hello_world.bas
@@ -207,11 +207,11 @@ End Sub
 ```
 このマクロを実行してみましょう．一旦エディタを閉じます．<br clear="all">
 
-<img src="レポート図/Excelマクロ実行画面.png" width=50% align="right"><br>
+<img src="images/Excelマクロ実行画面.png" width=50% align="right"><br>
 開発タブの右上にあるマクロボタンを押して右側のようなマクロを実行できるウィンドウを表示します．<br>
 先程作成したHelloWorldを選択して実行をクリックします．<br clear="all">
 
-<img src="レポート図/Excelhelloworld実行結果.png" width=50% align="right">
+<img src="images/Excelhelloworld実行結果.png" width=50% align="right">
 右の画像のようにB2セルに「Hello,World!」と入力されていれば成功です．<br>
 このように，VBAを直接記述してマクロを作成することができます．この方法であれば，繰り返し処理や条件分岐処理をマクロとしてじっこうすることが可能になります．<br>
 では，この方法を使って，Arduinoから送られてくる信号を表に記録するマクロを作りましょう．<br clear="all">
@@ -256,10 +256,10 @@ End Sub
 
 これを実行することでArduinoからデータを受け取り，表に記録することができます．
 実行結果を下図に示します．<br>
-<img src="レポート図/ExcelCOMlogger実行結果1.png" width=50% ><img src="レポート図/ExcelCOMlogger実行結果2.png" width=50%>
+<img src="images/ExcelCOMlogger実行結果1.png" width=50% ><img src="images/ExcelCOMlogger実行結果2.png" width=50%>
 赤外線を検知したときの値の変化も記録されていますし，しっかり1000個目までデータを記録できています．<br>
 これで，このデータをもとにグラフを作成することで，リモコンから送信されているデータを分析できます．<br>
-<img src="レポート図/ExcelCOMloggerグラフ.png"><br>
+<img src="images/ExcelCOMloggerグラフ.png"><br>
 このようにグラフにすることができました．<br>
 線があるところは信号が送信されていない，逆は信号が送信されている部分です．<br>
 これでリモコンの信号がわかりました．ここから，データ数から信号の長さを割り出して実際に送信してみるもよし，他のボタンのデータを取ってどの部分がどういう意味なのかを調べてみたりシてもいいかもしれません．
